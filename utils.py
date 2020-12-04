@@ -4,15 +4,16 @@ import numpy as np
 from PIL import Image
 from collections import defaultdict
 
-def read_input(delim=',', fname='', generator=int):
-    if fname == '': fname = os.path.basename(sys.argv[0]).split('.')[0] + '.input'
+def read_input(delim=',', fname='', generator=int, test=False):
+    if fname == '': fname = os.path.basename(sys.argv[0]).split('.')[0] + ('.test' if test else '.input')
+
     if delim == None:
         return [generator(i) for i in list(open(fname,'r').read())]
     else:
         return [generator(i) for i in open(fname, 'r').read().split(delim)]
 
-def read_input_multi(delim_1='\n', delim_2=',', fname='', generator=int):
-    if fname == '': fname = os.path.basename(sys.argv[0]).split('.')[0] + '.input'
+def read_input_multi(delim_1='\n', delim_2=',', fname='', generator=int, test=False):
+    if fname == '': fname = os.path.basename(sys.argv[0]).split('.')[0] + ('.test' if test else '.input')
     return [([x for x in i.split(delim_2)] if delim_2 != None else list(i)) for i in open(fname, 'r').read().split(delim_1)]
 
 def sign(a):

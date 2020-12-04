@@ -1,6 +1,6 @@
 import utils
 
-inp = utils.read_input_multi(delim_2=None, generator=str)
+inp = utils.read_input_multi(delim_2=None, generator=str, test=False)
 
 def a(inp):
 	x, y, l = 0, 0, len(inp[0])
