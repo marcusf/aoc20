@@ -22,7 +22,7 @@ def a(inp):
 
 	print(valid)
 
-#byr (Birth Year) - four digits; at least 1920 and at most 2002.
+# byr (Birth Year) - four digits; at least 1920 and at most 2002.
 # iyr (Issue Year) - four digits; at least 2010 and at most 2020.
 # eyr (Expiration Year) - four digits; at least 2020 and at most 2030.
 # hgt (Height) - a number followed by either cm or in:
@@ -59,11 +59,7 @@ def is_invalid_hgt(key):
 		return True
 
 def is_invalid_hcl(key): return re.match(r'^#[0-9a-f]{6}$', key) == None
-
-def is_invalid_ecl(key):
-	ecls = set('amb blu brn gry grn hzl oth'.split(' '))
-	return not key in ecls
-
+def is_invalid_ecl(key): return not key in  set('amb blu brn gry grn hzl oth'.split(' '))
 def is_invalid_pid(key): return re.match(r'^[0-9]{9}$', key) == None
 
 def b(inp):

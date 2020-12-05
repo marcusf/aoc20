@@ -3,6 +3,7 @@ import sys
 import numpy as np
 from PIL import Image
 from collections import defaultdict
+from itertools import islice
 
 def read_input(delim=',', fname='', generator=int, test=False):
     if fname == '': fname = os.path.basename(sys.argv[0]).split('.')[0] + ('.test' if test else '.input')
@@ -23,6 +24,16 @@ def sign(a):
 
 def chunk(list, n):
     return [list[i * n:(i + 1) * n] for i in range((len(list) + n - 1) // n )] 
+
+def window(seq, n):
+    it = iter(seq)
+    result = tuple(islice(it, n))
+    if len(result) == n:
+        yield result
+    for elem in it:
+        result = result[1:] + (elem,)
+        yield result
+
 
 # ===============================================
 # An infite list representation from a finite list
