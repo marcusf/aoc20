@@ -25,7 +25,7 @@ def sign(a):
 def chunk(list, n):
     return [list[i * n:(i + 1) * n] for i in range((len(list) + n - 1) // n )] 
 
-def window(seq, n):
+def window(seq, n=2):
     it = iter(seq)
     result = tuple(islice(it, n))
     if len(result) == n:
