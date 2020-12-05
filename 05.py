@@ -1,7 +1,6 @@
-import utils
-import re
+from utils import input_lines, window
+from re import sub
 
-def get_seat(code): return int(re.sub('[BR]','1', re.sub(r'[FL]','0',code)), 2)
-seats = [get_seat(p) for p in utils.read_input(generator=str, delim='\n')]
+seats = [int(sub('[BR]','1', sub(r'[FL]','0',p)), 2) for p in input_lines()]
 print(max(seats)) # A
-print([lo+1 for lo, mid in utils.window(sorted(seats)) if lo+1 != mid][0]) # B
+print([lo+1 for lo, mid in window(sorted(seats)) if lo+1 != mid][0]) # B

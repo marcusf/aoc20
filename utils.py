@@ -5,6 +5,11 @@ from PIL import Image
 from collections import defaultdict
 from itertools import islice
 
+
+def input_lines(test=False, generator=str):
+    return read_input(delim='\n', generator=generator, test=test)
+
+
 def read_input(delim=',', fname='', generator=int, test=False):
     if fname == '': fname = os.path.basename(sys.argv[0]).split('.')[0] + ('.test' if test else '.input')
 
