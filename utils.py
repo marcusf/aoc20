@@ -10,7 +10,7 @@ def input_lines(test=False, generator=str):
     return read_input(delim='\n', generator=generator, test=test)
 
 
-def read_input(delim=',', fname='', generator=int, test=False):
+def read_input(delim=',', fname='', generator=str, test=False):
     if fname == '': fname = os.path.basename(sys.argv[0]).split('.')[0] + ('.test' if test else '.input')
 
     if delim == None:
@@ -18,7 +18,7 @@ def read_input(delim=',', fname='', generator=int, test=False):
     else:
         return [generator(i) for i in open(fname, 'r').read().split(delim)]
 
-def read_input_multi(delim_1='\n', delim_2=',', fname='', generator=int, test=False):
+def read_input_multi(delim_1='\n', delim_2=',', fname='', generator=str, test=False):
     if fname == '': fname = os.path.basename(sys.argv[0]).split('.')[0] + ('.test' if test else '.input')
     return [([x for x in i.split(delim_2)] if delim_2 != None else list(i)) for i in open(fname, 'r').read().split(delim_1)]
 
