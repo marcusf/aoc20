@@ -190,6 +190,29 @@ class GridLayer:
         else:
             self.meta[Coord2D(x,y)] = v
 
+    def connected_graph(self, exclude={}):
+        connected, bag = {}, set()
+        for k in self.grid_bag:
+            if not self.grid[k] in exclude:
+                bag.add(k)
+                adjacents = self.adjacent(k)
+                connected[k] = [a[0] for a in adjacents if a[0] in self.grid_bag and not self.grid[a[0]] in exclude]
+        return bag, connected
+
+    def bfs(self, start, end, exclude={}):
+        q = [(start,[start])]
+        visited = set()
+        nodes, edges = self.connected_graph(exclude)
+        while q:
+            v, g = q.pop(0)
+            if v == end:
+                return v,g
+            else:
+                for edge in edges[v]:
+                    if not edge in visited:
+                        visited.add(edge)
+                        q.append((edge, g+[edge]))
+
     def get_meta(self, x_or_coord, y=None):
         if y == None:
             return self.meta[x_or_coord]
@@ -204,7 +227,7 @@ class GridLayer:
         _int_printer = lambda c: '#' if c == 1 else ' '
         _str_printer = lambda c: c if c else ' '
         if factory == None:
-            if isinstance(self.value_constructor, int):
+            if self.value_constructor == int:
                 factory = _int_printer
             else:
                 factory = _str_printer
