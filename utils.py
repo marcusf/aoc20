@@ -286,3 +286,19 @@ class Grid:
                 array[cord.y+off_y][cord.x+off_x] = [r,g,b]
         return Image.fromarray(array).show()
 
+class Graph:
+
+    def __init__(self):
+        self.edges = defaultdict(set)
+        self.weights = defaultdict(int)
+        self.nodes = set()
+        self.back = defaultdict(set)
+
+    def add_node(self, node):
+        self.nodes.add(node)
+
+    def add_edge(self, frm, to, weight):
+        self.edges[frm].add(to)
+        self.back[to].add(frm)
+        self.weights[(frm,to)] = weight
+
