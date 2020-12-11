@@ -20,7 +20,7 @@ def read_input(delim=',', fname='', generator=str, test=False):
 
 def read_input_multi(delim_1='\n', delim_2=',', fname='', generator=str, test=False):
     if fname == '': fname = os.path.basename(sys.argv[0]).split('.')[0] + ('.test' if test else '.input')
-    return [([x for x in i.split(delim_2)] if delim_2 != None else list(i)) for i in open(fname, 'r').read().split(delim_1)]
+    return [([generator(x) for x in i.split(delim_2)] if delim_2 != None else list(i)) for i in open(fname, 'r').read().split(delim_1)]
 
 def sign(a):
     if a > 0: return 1
