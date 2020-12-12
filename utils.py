@@ -66,7 +66,7 @@ class longlist(list):
 # ==============================================
 # Basic 2D coordinates
 class Coord2D:
-    def __init__(self, x, y):
+    def __init__(self, x, y, direction=(1,0)):
         self.x = x
         self.y = y
 
@@ -93,13 +93,13 @@ class Coord2D:
     def __sub__(self, other):
         return Coord2D(self.x-other.x, self.y-other.y)
 
-    def rotate90(self):
+    def rotate90L(self): # (1,0) becomes (0,-1)
         sx = self.x
         self.x = -self.y
         self.y = sx
         return self
     
-    def rotate270(self):
+    def rotate90R(self): # (1,0) becomes (0,1)
         sx = self.x
         self.x = self.y
         self.y = -sx
@@ -165,6 +165,9 @@ class GridLayer:
     def bounds(self):
         return (self.minx, self.miny, self.maxx, self.maxy)
 
+    def inside(self, p):
+        return p.x >= self.minx and p.x <= self.maxx and p.y >= self.miny and p.y <= self.maxy
+
     def put(self, x, y, val):
         self.grid[Coord2D(x,y)] = val
         self.grid_bag.add(Coord2D(x,y))
@@ -177,11 +180,26 @@ class GridLayer:
         return self.grid[Coord2D(x,y)]
 
     def adjacent(self, pos):
+        g = self.grid.copy()
         return [
-            (pos+(1,0), self.grid[pos+(1,0)], self.meta[pos+(1,0)]),
-            (pos+(-1,0), self.grid[pos+(-1,0)], self.meta[pos+(-1,0)]),
-            (pos+(0,1), self.grid[pos+(0,1)], self.meta[pos+(0,1)]),
-            (pos+(0,-1), self.grid[pos+(0,-1)], self.meta[pos+(0,-1)]),
+            (pos+(1,0), g[pos+(1,0)], self.meta[pos+(1,0)]),
+            (pos+(-1,0), g[pos+(-1,0)], self.meta[pos+(-1,0)]),
+            (pos+(0,1), g[pos+(0,1)], self.meta[pos+(0,1)]),
+            (pos+(0,-1), g[pos+(0,-1)], self.meta[pos+(0,-1)]),
+        ]
+
+    def wide_adjacent(self, pos):
+        g = self.grid.copy()
+        return [
+            (pos+(1,0), g[pos+(1,0)], self.meta[pos+(1,0)]),
+            (pos+(-1,0), g[pos+(-1,0)], self.meta[pos+(-1,0)]),
+            (pos+(0,1), g[pos+(0,1)], self.meta[pos+(0,1)]),
+            (pos+(0,-1), g[pos+(0,-1)], self.meta[pos+(0,-1)]),
+
+            (pos+(-1,-1), g[pos+(-1,-1)], self.meta[pos+(-1,-1)]),
+            (pos+(1,1), g[pos+(1,1)], self.meta[pos+(1,1)]),
+            (pos+(1,-1), g[pos+(1,-1)], self.meta[pos+(1,-1)]),
+            (pos+(-1,1), g[pos+(-1,1)], self.meta[pos+(-1,1)])
         ]
 
     def put_meta(self, x, y, v=None):
