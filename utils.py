@@ -127,6 +127,108 @@ class Coord3D:
         return self
     def __sub__(self, other):
         return Coord3D(self.x-other.x, self.y-other.y, self.z-other.z)
+    def adjacent(self):
+        return [Coord3D(self.x+x,self.y+y,self.z+z) for x in [-1,0,1] for y in [-1,0,1] for z in [-1,0,1] if not (x == 0 and y == 0 and z == 0)]
+
+
+# ==============================================
+# Basic 4D coordinates
+class Coord4D:
+    def __init__(self, x, y, z, w):
+        self.x = x
+        self.y = y
+        self.z = z
+        self.w = w
+
+    def __hash__(self): return hash((self.x, self.y, self.z, self.w))
+    def __str__(self): return f"{self.x}x{self.y}x{self.z}x{self.w}"
+    def __repr__(self): return self.__str__()
+    def __eq__(self, other): 
+        if isinstance(other, tuple): return (self.x, self.y, self.z, self.w) == other 
+        else: return (self.x, self.y, self.z, self.w) == (other.x, other.y, other.z, other.w)
+    def __ne__(self, other): return not(self == other)
+    def __iadd__(self, other): 
+        self.x += other.x
+        self.y += other.y 
+        self.z += other.z
+        self.w += other.w
+        return self
+    def __sub__(self, other):
+        return Coord4D(self.x-other.x, self.y-other.y, self.z-other.z, self.w-other.w)
+    def adjacent(self):
+        return [Coord4D(self.x+x,self.y+y,self.z+z,self.w+w) for x in [-1,0,1] for y in [-1,0,1] for z in [-1,0,1] for w in [-1,0,1] if not (x == 0 and y == 0 and z == 0 and w == 0)]
+
+
+class Space3D:
+    def __init__(self):
+        self.points = set()
+        self.xs = [0,0]
+        self.ys = [0,0]
+        self.zs = [0,0]
+
+    def __contains__(self, obj):
+        return obj in self.points
+
+    def add(self, coord):
+        self.points.add(coord)
+        self.xs = [min(self.xs[0], coord.x), max(self.xs[1], coord.x)]
+        self.ys = [min(self.ys[0], coord.y), max(self.ys[1], coord.y)]
+        self.zs = [min(self.zs[0], coord.z), max(self.zs[1], coord.z)]
+
+    def print(self):
+        for z in range(self.zs[0],self.zs[1]+1):
+            print('z={}'.format(z))
+            for y in range(self.ys[0],self.ys[1]+1):
+                s = ''
+                for x in range(self.xs[0],self.xs[1]+1):
+                    s += '#' if Coord3D(x,y,z) in self else '.'
+                print(s)
+            print(' '*(1+self.xs[1]-self.xs[0]))
+    
+    def universe(self):
+        for z in range(self.zs[0],self.zs[1]+1):
+            for y in range(self.ys[0],self.ys[1]+1):
+                for x in range(self.xs[0],self.xs[1]+1):
+                    c = Coord3D(x,y,z)
+                    yield (c, c in self)
+
+class Space4D:
+    def __init__(self):
+        self.points = set()
+        self.xs = [0,0]
+        self.ys = [0,0]
+        self.zs = [0,0]
+        self.ws = [0,0]
+
+    def __contains__(self, obj):
+        return obj in self.points
+
+    def add(self, coord):
+        self.points.add(coord)
+        self.xs = [min(self.xs[0], coord.x), max(self.xs[1], coord.x)]
+        self.ys = [min(self.ys[0], coord.y), max(self.ys[1], coord.y)]
+        self.zs = [min(self.zs[0], coord.z), max(self.zs[1], coord.z)]
+        self.ws = [min(self.ws[0], coord.w), max(self.ws[1], coord.w)]
+
+    def print(self):
+        for w in range(self.ws[0],self.ws[1]+1):
+            for z in range(self.zs[0],self.zs[1]+1):
+                print('z={},w={}'.format(z,w))
+                for y in range(self.ys[0],self.ys[1]+1):
+                    s = ''
+                    for x in range(self.xs[0],self.xs[1]+1):
+                        s += '#' if Coord4D(x,y,z,w) in self else '.'
+                    print(s)
+                print(' '*(1+self.xs[1]-self.xs[0]))
+    
+    def universe(self):
+        for w in range(self.ws[0],self.ws[1]+1):
+            for z in range(self.zs[0],self.zs[1]+1):
+                for y in range(self.ys[0],self.ys[1]+1):
+                    for x in range(self.xs[0],self.xs[1]+1):
+                        c = Coord4D(x,y,z,w)
+                        yield (c, c in self)
+
 
 # ===================================================
 # Simple grid layer. Combine with other grid layers

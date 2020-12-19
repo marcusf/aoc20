@@ -37,19 +37,15 @@ for row in valid_rows:
             if not ((l1 <= column and h1 >= column) or (l2 <= column and h2 >= column)):
                 valid_columns[i] -= set([col_spec])
 
-cands = [[n,v] for n,v in enumerate(valid_columns)]
+candidates, done = [[n,v] for n,v in enumerate(valid_columns)], {}
 
-done = {}
-
-while cands:
-    cands = sorted(cands, key=lambda v: len(v[1]))
-    col, vals = cands.pop(0)
-    if len(vals) == 1:
-        for i in range(len(cands)):
-           cands[i][1] -= vals
-        done[col] = vals.pop()
-    else:
-        print('kuken!')
+while candidates:
+    candidates = sorted(candidates, key=lambda v: len(v[1]))
+    col, vals = candidates.pop(0)
+    for i in range(len(candidates)):
+        candidates[i][1] -= vals
+    done[col] = vals.pop()
+  
 
 result = 1
 your = [int(y) for y in your.split('\n')[1].split(',')]
