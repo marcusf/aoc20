@@ -27,6 +27,9 @@ def a(input,i=0):
             nums.append(op(nums.pop(),nums.pop()))
     return nums[0]
 
+def add(a,b): return a+b
+def mul(a,b): return a*b
+
 # Simplified this from http://www.martinbroadhurst.com/shunting-yard-algorithm-in-python.html
 # after recalling RPN from college
 def shunting_yard(expression):
@@ -38,21 +41,21 @@ def shunting_yard(expression):
             operators.append(token)
         elif token == ')':
             top = operators[-1] 
-            while top is not None and top != '(':
-                values.append(eval("{0}{1}{2}".format(values.pop(), operators.pop(), values.pop())))
+            while top and top != '(':
+                values.append(operators.pop()(values.pop(), values.pop()))
                 top = operators[-1] 
             operators.pop() # Discard the '('
         elif token in ['+','*']:
             top = operators[-1] if operators else None
-            while top is not None and top == '+':
-                values.append(eval("{0}{1}{2}".format(values.pop(), operators.pop(), values.pop())))
+            while top and top == add:
+                values.append(operators.pop()(values.pop(), values.pop()))
                 top = operators[-1] if operators else None
-            operators.append(token)
+            operators.append(add if token == '+' else mul)
         else:
             values.append(int(token))
 
     while operators:
-        values.append(eval("{0}{1}{2}".format(values.pop(), operators.pop(), values.pop())))
+        values.append(operators.pop()(values.pop(), values.pop()))
  
     return values[0]
 
