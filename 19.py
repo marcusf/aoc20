@@ -1,31 +1,12 @@
 import utils
 import re
 
-# 0: 4 1 5
-# 1: 2 3 | 3 2
-# 2: 4 4 | 5 5
-# 3: 4 5 | 5 4
-# 4: "a"
-# 5: "b"
-# "a" 1 "b"
-# "a" 2 3 | 3 2 "b"
-# "a" (((4 4 | 5 5) (4 5 | 5 4)) | ((4 5 | 5 4) (4 4 | 5 5))) "b"
-# a(((aa|bb)(ab|ba))|((ab|ba)(aa|bb)))b
-# ababbb and abbbab match
-# a  babb   b
-
 def parse(c): return c[1:-1] if c[0] == '"' else int(c)
 def is_literal(c): return c == 'a' or  c == 'b'
 
 input, data = utils.read_input_multi(delim_1='\n\n',delim_2='\n',test=False)
 rules = {}
 q = []
-
-# 290 too high
-# not 280.
-# 282
-# 268 too low
-# not 269
 
 for row in input:
     k,v = row.split(': ')
