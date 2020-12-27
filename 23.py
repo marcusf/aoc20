@@ -1,59 +1,75 @@
+class Clock:
+
+    def __init__(self, seed, maxx):
+        lst = seed[:]
+        self.clock = {}
+        lst += list(range(max(lst)+1, maxx+1))
+        for i, v in enumerate(lst):
+            if i+1 < len(lst):
+                self.clock[v] = lst[i+1]
+        self.clock[lst[-1]] = lst[0]
+        self.current = lst[0]
+        self.max = maxx
+        self.min = 1
+
+    def pick_up(self):
+        return ([self.clock[self.current], \
+        self.clock[self.clock[self.current]], \
+        self.clock[self.clock[self.clock[self.current]]]], self.current)
+
+    def get_destination(self, avoid=[]):
+        destination_value = self.current-1
+        if destination_value < self.min:
+            destination_value = self.max
+
+        while destination_value in avoid:
+            destination_value -= 1
+            if destination_value < self.min:
+                destination_value = self.max
+            
+        return destination_value
+
+    def move(self, idx, values, destination):
+        nxt = self.clock[values[-1]]
+        self.clock[idx] = nxt
+        
+        nxt = self.clock[destination]
+        self.clock[destination] = values[0]
+        self.clock[values[-1]] = nxt
+    
+    def increment_current(self):
+        self.current = self.clock[self.current]
+
+    def print_win(self):
+        a = self.clock[1]
+        b = self.clock[a]
+        print(a*b)
+
 input = '326519478'
 
-clock = [int(a) for a in input]
-clock = clock + list(range(10, 1_000_001))
-def a(input):
-    clock = [int(a) for a in input]
-    for i in range(100):
-        pickup = clock[1:4]
-        destval = clock[0]-1
-        destination = clock.index(destval if destval >= 1 else 9)
-        i = 1
-        while destination in [1,2,3]:
-            destval = destval - i
-            if destval < 1: # min(clock):
-                destval = 9 # max(clock)
-            destination = clock.index(destval)
-        clock[destination+1:1] = pickup 
-        del clock[1]
-        del clock[1]
-        del clock[1]
-        a = clock.pop(0)
-        clock.append(a)
-
-    start = clock.index(1)
-    result = ''.join([str(s) for s in clock[start+1:] + clock[0:start]])
-    print(result)
-
 def b(input):
-    has_seen = set()
-    clock = [int(a) for a in input]
-    clock = clock + list(range(10, 1000))
-    for i in range(100000):
-        print(i, clock)
-        strt = clock.index(1)
+    clock = Clock([int(a) for a in input], 1_000_000)
+    for _ in range(10_000_000):
+        to_move, idx = clock.pick_up()
+        destination = clock.get_destination(avoid=to_move)
+        clock.move(idx, to_move, destination)
+        clock.increment_current()
+    clock.print_win()
 
-        if i % 1000 == 0:
-            print(i)
+def a(input):
+    clock = Clock([int(a) for a in input], len(input))
+    for _ in range(100):
+        to_move, idx = clock.pick_up()
+        destination = clock.get_destination(avoid=to_move)
+        clock.move(idx, to_move, destination)
+        clock.increment_current()
+    result, nxt = '', clock.clock[1]
+    while True:
+        result += str(nxt)
+        nxt = clock.clock[nxt]
+        if nxt == 1:
+            break
+    print(''.join(result))
 
-        pickup = clock[1:4]
-        destval = clock[0]-1
-        destination = clock.index(destval if destval >= 1 else 9)
-        i = 1
-        while destination in [1,2,3]:
-            destval = destval - i
-            if destval < 1: # min(clock):
-                destval = 9 # max(clock)
-            destination = clock.index(destval)
-        clock[destination+1:1] = pickup 
-        del clock[1]
-        del clock[1]
-        del clock[1]
-        a = clock.pop(0)
-        clock.append(a)
-
-    start = clock.index(1)
-    print(clock[(start+2)%len(clock)], clock[(start+2)%len(clock)])
-    print(clock[start+1]*clock[start+2])
-
+a(input)
 b(input)
